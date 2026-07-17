@@ -1,2 +1,4 @@
 # dnn.np
-Deep neural nets in pure numpy, manually.
+deep neural nets in pure numpy, manually.
+
+MIT License

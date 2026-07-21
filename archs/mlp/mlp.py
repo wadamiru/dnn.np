@@ -37,7 +37,7 @@ class Param:
         self.grad = np.zeros_like(self.value)
 
     def zero_grad(self) -> None:
-        seld.grad.fill(0.0)
+        self.grad.fill(0.0)
 
 class Layer:
     # only meaningful for batchnorm/dropout

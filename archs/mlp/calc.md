@@ -2,7 +2,7 @@
 
 ## Matrix Calculus Derivation: Linear Layer Gradients
 
-### 1. Mathematical Setup & Definitions
+### Mathematical Setup & Definitions
 
 Consider a mini-batched linear transformation layer $f: \mathbb{R}^{N \times d_{\text{in}}} \to \mathbb{R}^{N \times d_{\text{out}}}$ defined by the pre-activation mapping:
 
@@ -23,7 +23,7 @@ $$\delta Y \equiv \nabla_Y L = \frac{\partial L}{\partial Y} \in \mathbb{R}^{N \
 
 ---
 
-### 2. Axioms & Matrix Calculus Identities
+### Axioms & Matrix Calculus Identities
 
 > **Identity I (Frobenius Inner Product & Gradient Identification):**
 > 
@@ -47,7 +47,7 @@ $$\delta Y \equiv \nabla_Y L = \frac{\partial L}{\partial Y} \in \mathbb{R}^{N \
 
 ---
 
-### 3. Total Differential Expansion
+### Total Differential Expansion
 
 Applying the total differential $\mathrm{d}(\cdot)$ to $Y = XW + \mathbf{1}_N b^T$:
 
@@ -67,9 +67,9 @@ $$\mathrm{d}L = \mathcal{T}_X + \mathcal{T}_W + \mathcal{T}_b$$
 
 ---
 
-### 4. Derivation of Gradients
+### Derivation of Gradients
 
-#### 4.1 Input Gradient ($\nabla_X L$)
+#### Input Gradient ($\nabla_X L$)
 
 Isolate $\mathcal{T}_X$ and apply trace identities to isolate $\mathrm{d}X$:
 
@@ -87,7 +87,7 @@ $$\nabla_X L = \delta Y W^T \in \mathbb{R}^{N \times d_{\text{in}}}$$
 
 ---
 
-#### 4.2 Weight Gradient ($\nabla_W L$)
+#### Weight Gradient ($\nabla_W L$)
 
 Isolate $\mathcal{T}_W$ and apply trace identities to isolate $\mathrm{d}W$:
 
@@ -101,7 +101,7 @@ $$\nabla_W L = X^T \delta Y \in \mathbb{R}^{d_{\text{in}} \times d_{\text{out}}}
 
 ---
 
-#### 4.3 Bias Gradient ($\nabla_b L$)
+#### Bias Gradient ($\nabla_b L$)
 
 Isolate $\mathcal{T}_b$ and apply trace identities to isolate $\mathrm{d}b$:
 
@@ -117,6 +117,8 @@ $$\nabla_b L = \delta Y^T \mathbf{1}_N = \sum_{i=1}^{N} \delta Y_{i, \cdot} \in 
 
 ---
 
-### 5. Final Analytic Results
+### final
 
-$$\begin{aligned} \nabla_X L &= \delta Y W^T \\ \nabla_W L &= X^T \delta Y \\ \nabla_b L &= \delta Y^T \mathbf{1}_N \end{aligned}$$
+$$\begin{aligned} \nabla_X L &= \delta Y W^T$$
+$$\nabla_W L &= X^T \delta Y$$
+$$\nabla_b L &= \delta Y^T \mathbf{1}_N \end{aligned}$$

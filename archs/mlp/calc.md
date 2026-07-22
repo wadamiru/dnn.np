@@ -119,6 +119,6 @@ $$\nabla_b L = \delta Y^T \mathbf{1}_N = \sum_{i=1}^{N} \delta Y_{i, \cdot} \in 
 
 ### final
 
-$$\begin{aligned} \nabla_X L &= \delta Y W^T$$
+$$\nabla_X L &= \delta Y W^T$$
 $$\nabla_W L &= X^T \delta Y$$
-$$\nabla_b L &= \delta Y^T \mathbf{1}_N \end{aligned}$$
+$$\nabla_b L &= \delta Y^T \mathbf{1}_N$$

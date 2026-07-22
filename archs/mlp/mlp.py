@@ -67,4 +67,10 @@ class Linear(Layer):
         self._x = x
         return x @ self.W.val + self.b.val
 
-    def backward(self, )
+    def backward(self, dout: np.ndarray) -> np.ndarray:
+        self.W.grad += self._x.T @ dout
+        self.b.grad += dout.sum(axis=0)
+        return dout @ self.W.val.T      # dx
+
+    def params(self) -> List[Params]:
+        return [self.W, self.b]

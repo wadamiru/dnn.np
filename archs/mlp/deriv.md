@@ -230,7 +230,7 @@ $$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sq
 
 #### Consolidation of Terms ($\nabla_X L$)
 
-Recombine ${\mathcal{T}}_{\mathrm{direct}}$ and ${\mathcal{T}}_{\mathrm{rate}}$ into $\mathrm{d}L$:
+Recombine $T_{\mathrm{direct}}$ and $T_{\mathrm{rate}}$ into $\mathrm{d}L$:
 
 $$\mathrm{d}L = \text{Tr}\left( \left( \delta Y \circ \Phi(X) \right)^T \mathrm{d}X \right) + \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)^T \mathrm{d}X \right)$$
 

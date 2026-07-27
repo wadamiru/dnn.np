@@ -1,4 +1,4 @@
-# Calc. mlp
+# Derivations
 
 ## Matrix Calculus Derivation: Linear Layer Gradients
 

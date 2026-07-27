@@ -124,3 +124,136 @@ $$\nabla_W L = X^T \delta Y$$
 $$\nabla_b L = \delta Y^T \mathbf{1}_N$$
 
 ---
+
+---
+
+## Matrix Calculus Derivation: GELU Layer Gradients
+
+### Mathematical Setup & Definitions
+
+Consider an element-wise Gaussian Error Linear Unit mapping $f: \mathbb{R}^{N \times d} \to \mathbb{R}^{N \times d}$ defined by:
+
+$$Y = \text{GELU}(X) = X \circ \Phi(X)$$
+
+Where:
+
+* $X \in \mathbb{R}^{N \times d}$ : Batch Input Matrix
+* $Y \in \mathbb{R}^{N \times d}$ : Activated Output Matrix
+* $\circ$ : Hadamard (Element-wise) Product Operator
+* $\Phi(X)$ : Standard Gaussian Cumulative Distribution Function (CDF) evaluated element-wise
+* $\mathbf{1}_{N \times d} \in \mathbb{R}^{N \times d}$ : Matrix of Ones with dimension $N \times d$
+* $L \in \mathbb{R}$ : Scalar Loss Value
+
+The exact CDF $\Phi(X)$ is expressed using the Error Function $\text{erf}(\cdot)$:
+
+$$\Phi(X) = \frac{1}{2} \left( \mathbf{1}_{N \times d} + \text{erf}\left( \frac{X}{\sqrt{2}} \right) \right)$$
+
+Let the upstream loss gradient with respect to $Y$ be defined as:
+
+$$\delta Y \equiv \nabla_Y L = \frac{\partial L}{\partial Y} \in \mathbb{R}^{N \times d}$$
+
+---
+
+### Axioms & Matrix Calculus Identities
+
+> **Identity I (Hadamard Commutativity & Duality inside Trace):**
+> $$\text{Tr}\left( A^T (B \circ C) \right) = \text{Tr}\left( (A \circ B)^T C \right)$$
+> 
+> 
+> *Proof:* $\sum_{i,j} A_{ij} (B_{ij} C_{ij}) = \sum_{i,j} (A_{ij} B_{ij}) C_{ij}$.
+
+> **Identity II (Standard Gaussian Density & Error Function Derivative):**
+> $$\frac{\mathrm{d}}{\mathrm{d}u} \text{erf}(u) = \frac{2}{\sqrt{\pi}} e^{-u^2} \implies \Phi'(x) = \frac{\mathrm{d}\Phi(x)}{\mathrm{d}x} = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}$$
+> 
+> 
+
+> **Identity III (Total Differential of Hadamard Product):**
+> $$\mathrm{d}(A \circ B) = (\mathrm{d}A) \circ B + A \circ (\mathrm{d}B)$$
+> 
+> 
+
+---
+
+### Total Differential Expansion
+
+Applying the total differential $\mathrm{d}(\cdot)$ to $Y = X \circ \Phi(X)$ using Identity III:
+
+$$\mathrm{d}Y = (\mathrm{d}X) \circ \Phi(X) + X \circ \mathrm{d}\Phi(X)$$
+
+Expressing the scalar loss differential $\mathrm{d}L$ using the Frobenius Inner Product definition:
+
+$$\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right)$$
+
+Substitute $\mathrm{d}Y$ into $\mathrm{d}L$ and expand by trace linearity:
+
+$$\mathrm{d}L = \text{Tr}\left( \delta Y^T \left( (\mathrm{d}X) \circ \Phi(X) \right) \right) + \text{Tr}\left( \delta Y^T \left( X \circ \mathrm{d}\Phi(X) \right) \right)$$
+
+Define the two path terms as:
+
+$$\mathrm{d}L = \mathcal{T}_{\text{direct}} + \mathcal{T}_{\text{rate}}$$
+
+---
+
+### Derivation of Gradients
+
+#### Direct Activation Pathway ($\mathcal{T}_{\text{direct}}$)
+
+Apply Identity I to isolate $\mathrm{d}X$:
+
+$$\mathcal{T}_{\text{direct}} = \text{Tr}\left( \delta Y^T \left( (\mathrm{d}X) \circ \Phi(X) \right) \right)$$
+
+$$\mathcal{T}_{\text{direct}} = \text{Tr}\left( \left( \delta Y \circ \Phi(X) \right)^T \mathrm{d}X \right) \quad \text{(Hadamard trace duality)}$$
+
+---
+
+#### Rate-of-Change Pathway ($\mathcal{T}_{\text{rate}}$)
+
+Apply Identity I to isolate $\mathrm{d}\Phi(X)$:
+
+$$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \delta Y^T \left( X \circ \mathrm{d}\Phi(X) \right) \right)$$
+
+$$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \left( \delta Y \circ X \right)^T \mathrm{d}\Phi(X) \right) \quad \text{(Hadamard trace duality)}$$
+
+Express $\mathrm{d}\Phi(X)$ in terms of $\mathrm{d}X$ using Identity II:
+
+$$\mathrm{d}\Phi(X) = \Phi'(X) \circ \mathrm{d}X = \left( \frac{1}{\sqrt{2\pi}} \exp\left( -\frac{X^{\circ 2}}{2} \right) \right) \circ \mathrm{d}X$$
+
+Substitute $\mathrm{d}\Phi(X)$ back into $\mathcal{T}_{\text{rate}}$:
+
+$$\mathcal{T}_{\text{rate}} = \text{Tr}\left( (\delta Y \circ X)^T \left[ \left( \frac{1}{\sqrt{2\pi}} \exp\left( -\frac{X^{\circ 2}}{2} \right) \right) \circ \mathrm{d}X \right] \right)$$
+
+Apply Identity I a second time:
+
+$$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)^T \mathrm{d}X \right)$$
+
+---
+
+#### Consolidation of Terms ($\nabla_X L$)
+
+Recombine $\mathcal{T}_{\text{direct}}$ and $\mathcal{T}_{\text{rate}}$ into $\mathrm{d}L$:
+
+$$\mathrm{d}L = \text{Tr}\left( \left( \delta Y \circ \Phi(X) \right)^T \mathrm{d}X \right) + \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)^T \mathrm{d}X \right)$$
+
+Factor out $\delta Y$ and $\mathrm{d}X$:
+
+$$\mathrm{d}L = \text{Tr}\left( \left[ \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right) \right]^T \mathrm{d}X \right)$$
+
+By matching with $\mathrm{d}L = \text{Tr}\left( (\nabla_X L)^T \mathrm{d}X \right)$:
+
+$$\nabla_X L = \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right) \in \mathbb{R}^{N \times d}$$
+
+---
+
+### GELU: final
+
+#### Exact Formulation
+
+$$\nabla_X L = \delta Y \circ \left( \frac{1}{2} \left[ \mathbf{1}_{N \times d} + \text{erf}\left( \frac{X}{\sqrt{2}} \right) \right] + \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)$$
+
+#### Fast $\tanh$ Approximation
+
+For $U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 X^{\circ 3} \right)$:
+
+$$\nabla_X L \approx \delta Y \circ \left( 0.5 \left( \mathbf{1}_{N \times d} + \tanh(U) \right) + 0.5 X \circ \left( \mathbf{1}_{N \times d} - \tanh^{\circ 2}(U) \right) \circ \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 0.134145 X^{\circ 2} \right) \right)$$
+
+---

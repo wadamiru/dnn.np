@@ -92,4 +92,6 @@ class GELU(Layer):
 
     def backward(self, dout: np.ndarray) -> np.ndarray:
         x, t, c = self._x, self._t, self._c
-        
+        du = c * (1.0 + 0.134145 * x**2)
+        dy = 0.5 * (1.0 + t) + 0.5 * x * (1.0 - t**2) * du
+        return dout * dy

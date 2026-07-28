@@ -114,7 +114,8 @@ Applying Identity IV (Hadamard differential rule) to $Y = X \circ \Phi(X)$:
 
 $$\mathrm{d}Y = (\mathrm{d}X) \circ \Phi(X) + X \circ \mathrm{d}\Phi(X)$$
 
-Substituting $\mathrm{d}Y$ into $\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right)$ yields two distinct pathways: $$\mathrm{d}L = \mathcal{T}_{\text{direct}} + \mathcal{T}_{\text{rate}}$$
+Substituting $\mathrm{d}Y$ into $\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right)$ yields two distinct pathways: 
+$$\mathrm{d}L = T_{\text{direct}} + T_{\text{rate}}$$
 
 #### Direct Pathway ($\mathcal{T}_{\text{direct}}$)
 Using Identity III:

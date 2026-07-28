@@ -120,9 +120,11 @@ Expanding $\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right) = \mathc
    $$\mathcal{T}_{\text{direct}} = \text{Tr}\left( \delta Y^T ((\mathrm{d}X) \circ \Phi(X)) \right) = \text{Tr}\left( (\delta Y \circ \Phi(X))^T \mathrm{d}X \right)$$
 
 2. **Rate Pathway ($\mathcal{T}_{\text{rate}}$):**
-   Applying Identity III twice:
-   $$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \delta Y^T (X \circ \mathrm{d}\Phi(X)) \right) = \text{Tr}\left( (\delta Y \circ X)^T \mathrm{d}\Phi(X) \right)$$
-   $$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)^T \mathrm{d}X \right)$$
+Applying Identity III twice:
+
+$$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \delta Y^T (X \circ \mathrm{d}\Phi(X)) \right) = \text{Tr}\left( (\delta Y \circ X)^T \mathrm{d}\Phi(X) \right)$$
+
+$$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)^T \mathrm{d}X \right)$$
 
 3. **Recombination ($\nabla_X L$):**
    Factoring out $\mathrm{d}X$ gives the exact gradient:

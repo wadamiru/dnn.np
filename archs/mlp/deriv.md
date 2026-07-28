@@ -348,3 +348,121 @@ $$\nabla_X L = \delta Y \circ \mathbb{I}(X > 0) \in \mathbb{R}^{N \times d}$$
 ### ReLU: final
 
 $$\nabla_X L = \delta Y \circ \mathbb{I}(X > 0) = \begin{cases} \delta Y_{ij} & \text{if } X_{ij} > 0 \\ 0 & \text{if } X_{ij} \le 0 \end{cases}$$
+
+---
+---
+
+## Matrix Calculus Derivation: Softmax Cross-Entropy Gradients
+
+### Mathematical Setup & Definitions
+
+Consider a classification layer mapping pre-activation logits $Z \in \mathbb{R}^{N \times C}$ to class probabilities $P \in \mathbb{R}^{N \times C}$, evaluated against a target distribution matrix $Y \in \mathbb{R}^{N \times C}$:
+
+$$P = \text{Softmax}(Z) = \left( \exp(Z) \mathbf{1}_C \right)^{-1}_{\text{diag}} \exp(Z)$$
+
+Where:
+
+* $Z \in \mathbb{R}^{N \times C}$ : Unnormalized Logit Matrix
+* $Y \in \mathbb{R}^{N \times C}$ : One-Hot Ground Truth Matrix ($\sum_{j=1}^C Y_{ij} = 1$)
+* $P \in \mathbb{R}^{N \times C}$ : Softmax Class Probability Matrix ($\sum_{j=1}^C P_{ij} = 1$)
+* $\mathbf{1}_C \in \mathbb{R}^{C \times 1}$ : Column Vector of Ones $(1, 1, \dots, 1)^T$
+* $\mathbf{1}_N \in \mathbb{R}^{N \times 1}$ : Column Vector of Ones $(1, 1, \dots, 1)^T$
+* $L \in \mathbb{R}$ : Average Cross-Entropy Loss Value across $N$ samples
+
+The mini-batch Cross-Entropy Loss $L$ is defined as:
+
+$$L(P, Y) = -\frac{1}{N} \mathbf{1}_N^T \left( Y \circ \ln(P) \right) \mathbf{1}_C$$
+
+---
+
+### Axioms & Matrix Calculus Identities
+
+> **Identity I (Row Normalization & Softmax Invariance):**
+> $$P \mathbf{1}_C = \mathbf{1}_N \quad \text{and} \quad Y \mathbf{1}_C = \mathbf{1}_N$$
+> 
+> 
+
+> **Identity II (Hadamard Commutativity & Duality inside Trace):**
+> $$\text{Tr}\left( A^T (B \circ C) \right) = \text{Tr}\left( (A \circ B)^T C \right)$$
+> 
+> 
+
+> **Identity III (Differential of Softmax Row Vectors):**
+> For a single row logit vector $z_i \in \mathbb{R}^{1 \times C}$ and probability vector $p_i = \text{Softmax}(z_i)$:
+> $$\mathrm{d}p_i = \mathrm{d}z_i \left( \operatorname{diag}(p_i) - p_i^T p_i \right)$$
+> 
+> 
+
+---
+
+### Total Differential Expansion
+
+Applying the total differential $\mathrm{d}(\cdot)$ directly to the scalar loss $L(P, Y)$:
+
+$$\mathrm{d}L = -\frac{1}{N} \text{Tr}\left( \mathbf{1}_C \mathbf{1}_N^T \mathrm{d}\left( Y \circ \ln(P) \right) \right)$$
+
+$$\mathrm{d}L = -\frac{1}{N} \text{Tr}\left( \mathbf{1}_N \mathbf{1}_C^T \left( Y \circ (P^{\circ -1} \circ \mathrm{d}P) \right)^T \right) \quad \text{(Trace transpose)}$$
+
+Applying Identity II (Hadamard duality) to isolate $\mathrm{d}P$:
+
+$$\mathrm{d}L = -\frac{1}{N} \text{Tr}\left( \left[ \left( \mathbf{1}_N \mathbf{1}_C^T \right) \circ Y \circ P^{\circ -1} \right]^T \mathrm{d}P \right)$$
+
+Since $\mathbf{1}_N \mathbf{1}_C^T$ is a matrix of all ones, this simplifies to:
+
+$$\mathrm{d}L = -\frac{1}{N} \text{Tr}\left( \left( Y \circ P^{\circ -1} \right)^T \mathrm{d}P \right)$$
+
+---
+
+### Derivation of Gradients
+
+#### Step-by-Step Row Differential Evaluation
+
+To evaluate $\mathrm{d}L$ in terms of $\mathrm{d}Z$, expand row-wise for sample $i \in \{1, \dots, N\}$:
+
+$$\mathrm{d}L = -\frac{1}{N} \sum_{i=1}^N \mathrm{d}p_i \left( y_i \circ p_i^{\circ -1} \right)^T$$
+
+Substitute the row softmax differential from Identity III ($\mathrm{d}p_i = \mathrm{d}z_i \left( \operatorname{diag}(p_i) - p_i^T p_i \right)$):
+
+$$\mathrm{d}L = -\frac{1}{N} \sum_{i=1}^N \mathrm{d}z_i \left( \operatorname{diag}(p_i) - p_i^T p_i \right) \left( y_i \circ p_i^{\circ -1} \right)^T$$
+
+Expand the matrix-vector multiplication:
+
+$$\left( \operatorname{diag}(p_i) - p_i^T p_i \right) \left( y_i \circ p_i^{\circ -1} \right)^T = \operatorname{diag}(p_i) \left( y_i \circ p_i^{\circ -1} \right)^T - p_i^T p_i \left( y_i \circ p_i^{\circ -1} \right)^T$$
+
+#### Term 1: $\operatorname{diag}(p_i) \left( y_i \circ p_i^{\circ -1} \right)^T$
+
+$$\operatorname{diag}(p_i) \left( \frac{y_i}{p_i} \right)^T = p_i^T \circ \left( \frac{y_i}{p_i} \right)^T = y_i^T$$
+
+#### Term 2: $p_i^T p_i \left( y_i \circ p_i^{\circ -1} \right)^T$
+
+$$p_i \left( y_i \circ p_i^{\circ -1} \right)^T = \sum_{j=1}^C p_{ij} \frac{y_{ij}}{p_{ij}} = \sum_{j=1}^C y_{ij} = 1 \quad \text{(using Identity I)}$$
+
+Thus, $p_i^T p_i \left( y_i \circ p_i^{\circ -1} \right)^T = p_i^T (1) = p_i^T$.
+
+---
+
+#### Matrix Re-consolidation ($\nabla_Z L$)
+
+Substituting Term 1 and Term 2 back into the row expansion:
+
+$$\mathrm{d}L = -\frac{1}{N} \sum_{i=1}^N \mathrm{d}z_i \left( y_i^T - p_i^T \right) = \frac{1}{N} \sum_{i=1}^N \mathrm{d}z_i \left( p_i - y_i \right)^T$$
+
+Re-assembling the individual row vectors back into full mini-batch matrices $Z, P, Y \in \mathbb{R}^{N \times C}$ via trace form:
+
+$$\mathrm{d}L = \frac{1}{N} \text{Tr}\left( (P - Y)^T \mathrm{d}Z \right)$$
+
+By matching with $\mathrm{d}L = \text{Tr}\left( (\nabla_Z L)^T \mathrm{d}Z \right)$:
+
+$$\nabla_Z L = \frac{1}{N} (P - Y) \in \mathbb{R}^{N \times C}$$
+
+---
+
+### Softmax Cross-Entropy: final
+
+#### Unaveraged Loss Gradient
+
+$$\nabla_Z L_{\text{sum}} = P - Y$$
+
+#### Average Mini-Batch Loss Gradient
+
+$$\nabla_Z L = \frac{1}{N} (P - Y)$$

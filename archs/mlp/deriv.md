@@ -257,3 +257,94 @@ For $U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 X^{\circ 3} \right)$:
 $$\nabla_X L \approx \delta Y \circ \left( 0.5 \left( \mathbf{1}_{N \times d} + \tanh(U) \right) + 0.5 X \circ \left( \mathbf{1}_{N \times d} - \tanh^{\circ 2}(U) \right) \circ \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 0.134145 X^{\circ 2} \right) \right)$$
 
 ---
+---
+
+## Matrix Calculus Derivation: ReLU Layer Gradients
+
+### Mathematical Setup & Definitions
+
+Consider an element-wise Rectified Linear Unit (ReLU) mapping $f: \mathbb{R}^{N \times d} \to \mathbb{R}^{N \times d}$ defined by:
+
+$$Y = \text{ReLU}(X) = \max(\mathbf{0}_{N \times d}, X) = X \circ H(X)$$
+
+Where:
+
+* $X \in \mathbb{R}^{N \times d}$ : Batch Input Matrix
+* $Y \in \mathbb{R}^{N \times d}$ : Activated Output Matrix
+* $\circ$ : Hadamard (Element-wise) Product Operator
+* $\mathbf{0}_{N \times d} \in \mathbb{R}^{N \times d}$ : Matrix of Zeros with dimension $N \times d$
+* $H(X) \in \{0, 1\}^{N \times d}$ : Element-wise Heaviside Step Indicator Matrix
+* $L \in \mathbb{R}$ : Scalar Loss Value
+
+The element-wise Heaviside step function $H(x)$ is defined as:
+
+$$H(x) = \begin{cases} 1 & \text{if } x > 0 \\ 0 & \text{if } x < 0 \end{cases}$$
+
+*(Note: At non-differentiable boundary points $x = 0$, a subgradient value is conventionally assigned, typically $H(0) = 0$ or $H(0) = 0.5$).*
+
+Let the upstream loss gradient with respect to $Y$ be defined as:
+
+$$\delta Y \equiv \nabla_Y L = \frac{\partial L}{\partial Y} \in \mathbb{R}^{N \times d}$$
+
+---
+
+### Axioms & Matrix Calculus Identities
+
+> **Identity I (Hadamard Commutativity & Duality inside Trace):**
+> $$\text{Tr}\left( A^T (B \circ C) \right) = \text{Tr}\left( (A \circ B)^T C \right)$$
+> 
+> 
+> *Proof:* $\sum_{i,j} A_{ij} (B_{ij} C_{ij}) = \sum_{i,j} (A_{ij} B_{ij}) C_{ij}$.
+
+> **Identity II (Subderivative of the ReLU Mapping):**
+> $$\frac{\mathrm{d}}{\mathrm{d}x} \text{ReLU}(x) = H(x) = \mathbb{I}(x > 0)$$
+> 
+> 
+> Where $\mathbb{I}(\cdot)$ is the indicator function returning $1$ when true and $0$ otherwise.
+
+> **Identity III (Total Differential of Hadamard Product):**
+> $$\mathrm{d}(A \circ B) = (\mathrm{d}A) \circ B + A \circ (\mathrm{d}B)$$
+> 
+> 
+
+---
+
+### Total Differential Expansion
+
+Applying the total differential $\mathrm{d}(\cdot)$ to $Y = X \circ H(X)$ using Identity III:
+
+$$\mathrm{d}Y = (\mathrm{d}X) \circ H(X) + X \circ \mathrm{d}H(X)$$
+
+Because $H(X)$ is piecewise constant everywhere except at $X = 0$ (a set of measure zero), its differential vanishes almost everywhere ($\mathrm{d}H(X) = \mathbf{0}_{N \times d}$). The second pathway simplifies directly:
+
+$$\mathrm{d}Y = (\mathrm{d}X) \circ H(X)$$
+
+Expressing the scalar loss differential $\mathrm{d}L$ using the Frobenius Inner Product definition:
+
+$$\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right)$$
+
+Substitute $\mathrm{d}Y$ into $\mathrm{d}L$:
+
+$$\mathrm{d}L = \text{Tr}\left( \delta Y^T \left( (\mathrm{d}X) \circ H(X) \right) \right)$$
+
+---
+
+### Derivation of Gradients
+
+Apply Identity I to isolate $\mathrm{d}X$:
+
+$$\mathrm{d}L = \text{Tr}\left( \left( \delta Y \circ H(X) \right)^T \mathrm{d}X \right) \quad \text{(Hadamard trace duality)}$$
+
+Substitute the definition of $H(X) = \mathbb{I}(X > 0)$:
+
+$$\mathrm{d}L = \text{Tr}\left( \left( \delta Y \circ \mathbb{I}(X > 0) \right)^T \mathrm{d}X \right)$$
+
+By matching with $\mathrm{d}L = \text{Tr}\left( (\nabla_X L)^T \mathrm{d}X \right)$:
+
+$$\nabla_X L = \delta Y \circ \mathbb{I}(X > 0) \in \mathbb{R}^{N \times d}$$
+
+---
+
+### ReLU: final
+
+$$\nabla_X L = \delta Y \circ \mathbb{I}(X > 0) = \begin{cases} \delta Y_{ij} & \text{if } X_{ij} > 0 \\ 0 & \text{if } X_{ij} \le 0 \end{cases}$$

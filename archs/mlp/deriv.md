@@ -136,7 +136,7 @@ $$\nabla_X L = \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\
 
 ### 2.4 Derivation for Fast $\tanh$ Approximation
 
-For the fast approximation, $Y = \text{GELU}_{\text{tanh}}(X) = \frac{1}{2} X \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right)$, where:
+For the fast approximation, $Y = \text{GELU}_{\tanh}(X) = \frac{1}{2} X \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right)$, where:
 
 $$U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 X^{\circ 3} \right)$$
 

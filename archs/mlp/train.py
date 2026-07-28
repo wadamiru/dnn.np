@@ -95,3 +95,11 @@ class GELU(Layer):
         du = c * (1.0 + 0.134145 * x**2)
         dy = 0.5 * (1.0 + t) + 0.5 * x * (1.0 - t**2) * du
         return dout * dy
+
+class ReLU(Layer):
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        self._mask = x > 0
+        return x * self._mask
+
+    def backward(self, dout: np.ndarray) -> np.ndarray:
+        return dout * self._mask

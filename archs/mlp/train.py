@@ -71,3 +71,23 @@ class Linear(Layer):
 
     def params(self) -> List[Params]:
         return [self.W, self.b]
+
+class GELU(Layer):
+    """
+    GELU, tanh approx. (as used in GPT-2/BERT):
+        y = 0.5 * x * (1 + tanh(c * (x + 0.044715 * x^3))), c = sqrt(2/pi)
+
+    For backward pass:
+    Let u = c * (x + 0.044715 * x^3), t = tanh(u):
+        y = 0.5 * x * (1 + t)
+    """
+
+    _c = np.float32(np.sqrt(2/np.pi))
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        u = self._c * (x + 0.044715 * x**3)
+        t = np.tanh(u)
+        self._x, self._t = x, t
+        return 0.5 * x * (1 + t)
+
+    

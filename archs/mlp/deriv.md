@@ -65,23 +65,32 @@ Let $\mathrm{d}L = \mathcal{T}_X + \mathcal{T}_W + \mathcal{T}_b$.
 
 ### 1.3 Derivation of Gradients
 
-* **Input Gradient ($\nabla_X L$):**
-  Applying Identity II to isolate $\mathrm{d}X$:
-  $$\mathcal{T}_X = \text{Tr}\left( \delta Y^T (\mathrm{d}X) W \right) = \text{Tr}\left( W \delta Y^T \mathrm{d}X \right) = \text{Tr}\left( (\delta Y W^T)^T \mathrm{d}X \right)$$
-  Matching with Identity I yields:
-  $$\nabla_X L = \delta Y W^T \in \mathbb{R}^{N \times d_{\text{in}}}$$
+#### Input Gradient ($\nabla_X L$)
+Applying Identity II to isolate $\mathrm{d}X$:
 
-* **Weight Gradient ($\nabla_W L$):**
-  Applying Identity II to isolate $\mathrm{d}W$:
-  $$\mathcal{T}_W = \text{Tr}\left( \delta Y^T X (\mathrm{d}W) \right) = \text{Tr}\left( (X^T \delta Y)^T \mathrm{d}W \right)$$
-  Matching with Identity I yields:
-  $$\nabla_W L = X^T \delta Y \in \mathbb{R}^{d_{\text{in}} \times d_{\text{out}}}$$
+$$\mathcal{T}_X = \text{Tr}\left( \delta Y^T (\mathrm{d}X) W \right) = \text{Tr}\left( W \delta Y^T \mathrm{d}X \right) = \text{Tr}\left( (\delta Y W^T)^T \mathrm{d}X \right)$$
 
-* **Bias Gradient ($\nabla_b L$):**
-  Applying Identity II to isolate $\mathrm{d}b$:
-  $$\mathcal{T}_b = \text{Tr}\left( \delta Y^T \mathbf{1}_N (\mathrm{d}b)^T \right) = \text{Tr}\left( (\mathrm{d}b)^T \delta Y^T \mathbf{1}_N \right) = \text{Tr}\left( (\mathbf{1}_N^T \delta Y) \mathrm{d}b \right)$$
-  Matching with Identity I yields:
-  $$\nabla_b L = \delta Y^T \mathbf{1}_N = \sum_{i=1}^{N} \delta Y_{i, \cdot} \in \mathbb{R}^{d_{\text{out}}}$$
+Matching with Identity I yields:
+
+$$\nabla_X L = \delta Y W^T \in \mathbb{R}^{N \times d_{\text{in}}}$$
+
+#### Weight Gradient ($\nabla_W L$)
+Applying Identity II to isolate $\mathrm{d}W$:
+
+$$\mathcal{T}_W = \text{Tr}\left( \delta Y^T X (\mathrm{d}W) \right) = \text{Tr}\left( (X^T \delta Y)^T \mathrm{d}W \right)$$
+
+Matching with Identity I yields:
+
+$$\nabla_W L = X^T \delta Y \in \mathbb{R}^{d_{\text{in}} \times d_{\text{out}}}$$
+
+#### Bias Gradient ($\nabla_b L$)
+Applying Identity II to isolate $\mathrm{d}b$:
+
+$$\mathcal{T}_b = \text{Tr}\left( \delta Y^T \mathbf{1}_N (\mathrm{d}b)^T \right) = \text{Tr}\left( (\mathrm{d}b)^T \delta Y^T \mathbf{1}_N \right) = \text{Tr}\left( (\mathbf{1}_N^T \delta Y) \mathrm{d}b \right)$$
+
+Matching with Identity I yields:
+
+$$\nabla_b L = \delta Y^T \mathbf{1}_N = \sum_{i=1}^{N} \delta Y_{i, \cdot} \in \mathbb{R}^{d_{\text{out}}}$$
 
 ---
 

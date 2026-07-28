@@ -90,4 +90,6 @@ class GELU(Layer):
         self._x, self._t = x, t
         return 0.5 * x * (1 + t)
 
-    
+    def backward(self, dout: np.ndarray) -> np.ndarray:
+        x, t, c = self._x, self._t, self._c
+        

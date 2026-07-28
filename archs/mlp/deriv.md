@@ -109,26 +109,29 @@ Using the standard normal PDF $\Phi'(x) = \frac{\mathrm{d}\Phi(x)}{\mathrm{d}x} 
 $$\mathrm{d}\Phi(X) = \Phi'(X) \circ \mathrm{d}X = \left( \frac{1}{\sqrt{2\pi}} \exp\left( -\frac{X^{\circ 2}}{2} \right) \right) \circ \mathrm{d}X$$
 
 ### 2.3 Derivation of Gradient
+
 Applying Identity IV (Hadamard differential rule) to $Y = X \circ \Phi(X)$:
 
 $$\mathrm{d}Y = (\mathrm{d}X) \circ \Phi(X) + X \circ \mathrm{d}\Phi(X)$$
 
-Expanding $\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right) = \mathcal{T}_{\text{direct}} + \mathcal{T}_{\text{rate}}$:
+Substituting $\mathrm{d}Y$ into $\mathrm{d}L = \text{Tr}\left( \delta Y^T \mathrm{d}Y \right)$ yields two distinct pathways: $\mathrm{d}L = \mathcal{T}_{\text{direct}} + \mathcal{T}_{\text{rate}}$.
 
-1. **Direct Pathway ($\mathcal{T}_{\text{direct}}$):**
-   Using Identity III:
-   $$\mathcal{T}_{\text{direct}} = \text{Tr}\left( \delta Y^T ((\mathrm{d}X) \circ \Phi(X)) \right) = \text{Tr}\left( (\delta Y \circ \Phi(X))^T \mathrm{d}X \right)$$
+#### Direct Pathway ($\mathcal{T}_{\text{direct}}$)
+Using Identity III:
 
-2. **Rate Pathway ($\mathcal{T}_{\text{rate}}$):**
+$$\mathcal{T}_{\text{direct}} = \text{Tr}\left( \delta Y^T ((\mathrm{d}X) \circ \Phi(X)) \right) = \text{Tr}\left( (\delta Y \circ \Phi(X))^T \mathrm{d}X \right)$$
+
+#### Rate Pathway ($\mathcal{T}_{\text{rate}}$)
 Applying Identity III twice:
 
 $$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \delta Y^T (X \circ \mathrm{d}\Phi(X)) \right) = \text{Tr}\left( (\delta Y \circ X)^T \mathrm{d}\Phi(X) \right)$$
 
 $$\mathcal{T}_{\text{rate}} = \text{Tr}\left( \left( \delta Y \circ \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)^T \mathrm{d}X \right)$$
 
-3. **Recombination ($\nabla_X L$):**
-   Factoring out $\mathrm{d}X$ gives the exact gradient:
-   $$\nabla_X L = \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)$$
+#### Recombination ($\nabla_X L$)
+Factoring out $\mathrm{d}X$ gives the exact gradient:
+
+$$\nabla_X L = \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\left( -\frac{X^{\circ 2}}{2} \right) \right)$$
 
 #### Fast $\tanh$ Approximation
 For $U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 X^{\circ 3} \right)$:

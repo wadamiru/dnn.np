@@ -162,7 +162,7 @@ $$
 \mathrm{d}U = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 3 \cdot 0.044715 \, X \odot X \right) \odot \mathrm{d}X = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 0.134145 \, X \odot X \right) \odot \mathrm{d}X
 $$
 
-#### Differential of the $\tanh$ Activation ($\mathrm{d}\tanh(U)$)
+#### Differential of the $\tanh$ Activation
 
 Using the element-wise derivative identity $\frac{\text{d}}{\text{d}u} \tanh(u) = 1 - \tanh^2(u)$:
 

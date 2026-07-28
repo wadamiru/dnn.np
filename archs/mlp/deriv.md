@@ -136,7 +136,7 @@ $$\nabla_X L = \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\
 
 ### 2.4 Derivation for Fast $\tanh$ Approximation
 
-For the fast approximation, $Y = \text{GELU}_{tanh}(X) = \frac{1}{2} X \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right)$, where:
+For the fast approximation, $Y = \text{GELU}_{\text{tanh}}(X) = \frac{1}{2} X \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right)$, where:
 
 $$U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 X^{\circ 3} \right)$$
 
@@ -150,7 +150,7 @@ Taking the Hadamard differential of $U$ with respect to $X$:
 
 $$\text{d}U = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 3 \cdot 0.044715 X^{\circ 2} \right) \circ \text{d}X = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 0.134145 X^{\circ 2} \right) \circ \text{d}X$$
 
-#### Differential of the $\tanh$ Activation (\text{d }\tanh(U))
+#### Differential of the $\tanh$ Activation ($\text{d }\tanh(U)$)
 
 Using the element-wise derivative identity $\frac{\text{d}}{\text{d}u} \tanh(u) = 1 - \tanh^2(u)$:
 

@@ -137,22 +137,19 @@ $$\nabla_X L = \delta Y \circ \left( \Phi(X) + \frac{X}{\sqrt{2\pi}} \circ \exp\
 ### 2.4 Derivation for Fast $\tanh$ Approximation
 
 For the fast approximation, 
-$$Y = \operatorname{GELU}_{\tanh}(X) = \frac{1}{2} X \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right)$$
+$$Y = \operatorname{GELU}_{\tanh}(X) = \frac{1}{2} X \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right)$$ 
 where:
-
-$$U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 X^{\circ 3} \right)$$
+$$U = \sqrt{\frac{2}{\pi}} \left( X + 0.044715 \, X^{\circ 3} \right)$$
 
 Applying the Hadamard product rule to $Y$:
+$$\mathrm{d}Y = \frac{1}{2} (\mathrm{d}X) \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right) + \frac{1}{2} X \circ \mathrm{d}\tanh(U)$$
 
-$$\text{d}Y = \frac{1}{2} (\text{d}X) \circ \left( \mathbf{1}_{N \times d} + \tanh(U) \right) + \frac{1}{2} X \circ \text{d}\tanh(U)$$
-
-#### Differential of the Inner Argument ($\text{d}U$)
+#### Differential of the Inner Argument ($\mathrm{d}U$)
 
 Taking the Hadamard differential of $U$ with respect to $X$:
+$$\mathrm{d}U = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 3 \cdot 0.044715 \, X^{\circ 2} \right) \circ \mathrm{d}X = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 0.134145 \, X^{\circ 2} \right) \circ \mathrm{d}X$$
 
-$$\text{d}U = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 3 \cdot 0.044715 X^{\circ 2} \right) \circ \text{d}X = \sqrt{\frac{2}{\pi}} \left( \mathbf{1}_{N \times d} + 0.134145 X^{\circ 2} \right) \circ \text{d}X$$
-
-#### Differential of the $\tanh$ Activation ($\mathrm{d} \tanh(U)$)
+#### Differential of the $\tanh$ Activation ($\mathrm{d}\tanh(U)$)
 
 Using the element-wise derivative identity $\frac{\text{d}}{\text{d}u} \tanh(u) = 1 - \tanh^2(u)$:
 

@@ -2,8 +2,6 @@
 dnn.np - deep MLP on CIFAR-10
 
 base MLP module extented with:
-    batchnorm
-    dropout
     GELU (with ReLU)
     decoupled-weight-decay AdamW optim
     cross-entropy backward
@@ -40,7 +38,6 @@ class Param:
         self.grad.fill(0.0)
 
 class Layer:
-    # only meaningful for batchnorm/dropout
     training: bool = True
 
     def forward(self, x: np.ndarray) -> np.ndarray:

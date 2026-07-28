@@ -358,7 +358,7 @@ $$\nabla_X L = \delta Y \circ \mathbb{I}(X > 0) = \begin{cases} \delta Y_{ij} & 
 
 Consider a classification layer mapping pre-activation logits $Z \in \mathbb{R}^{N \times C}$ to class probabilities $P \in \mathbb{R}^{N \times C}$, evaluated against a target distribution matrix $Y \in \mathbb{R}^{N \times C}$:
 
-$$P = \text{Softmax}(Z) = \left( \exp(Z) \mathbf{1}_C \right)^{-1}_{\text{diag}} \exp(Z)$$
+$$P = \text{Softmax}(Z) = \left( \exp(Z) \mathbf{1}_C \right)^{-1}_{\mathrm{diag}} \exp(Z)$$
 
 Where:
 
@@ -389,7 +389,7 @@ $$L(P, Y) = -\frac{1}{N} \mathbf{1}_N^T \left( Y \circ \ln(P) \right) \mathbf{1}
 
 > **Identity III (Differential of Softmax Row Vectors):**
 > For a single row logit vector $z_i \in \mathbb{R}^{1 \times C}$ and probability vector $p_i = \text{Softmax}(z_i)$:
-> $$\mathrm{d}p_i = \mathrm{d}z_i \left( \operatorname{diag}(p_i) - p_i^T p_i \right)$$
+> $$\mathrm{d}p_i = \mathrm{d}z_i \left( \mathrm{diag}\,(p_i) - p_i^T p_i \right)$$
 > 
 > 
 
@@ -421,17 +421,17 @@ To evaluate $\mathrm{d}L$ in terms of $\mathrm{d}Z$, expand row-wise for sample 
 
 $$\mathrm{d}L = -\frac{1}{N} \sum_{i=1}^N \mathrm{d}p_i \left( y_i \circ p_i^{\circ -1} \right)^T$$
 
-Substitute the row softmax differential from Identity III ($\mathrm{d}p_i = \mathrm{d}z_i \left( \operatorname{diag}(p_i) - p_i^T p_i \right)$):
+Substitute the row softmax differential from Identity III ($\mathrm{d}p_i = \mathrm{d}z_i \left( \mathrm{diag}\,(p_i) - p_i^T p_i \right)$):
 
-$$\mathrm{d}L = -\frac{1}{N} \sum_{i=1}^N \mathrm{d}z_i \left( \operatorname{diag}(p_i) - p_i^T p_i \right) \left( y_i \circ p_i^{\circ -1} \right)^T$$
+$$\mathrm{d}L = -\frac{1}{N} \sum_{i=1}^N \mathrm{d}z_i \left( \mathrm{diag}\,(p_i) - p_i^T p_i \right) \left( y_i \circ p_i^{\circ -1} \right)^T$$
 
 Expand the matrix-vector multiplication:
 
-$$\left( \operatorname{diag}(p_i) - p_i^T p_i \right) \left( y_i \circ p_i^{\circ -1} \right)^T = \operatorname{diag}(p_i) \left( y_i \circ p_i^{\circ -1} \right)^T - p_i^T p_i \left( y_i \circ p_i^{\circ -1} \right)^T$$
+$$\left( \mathrm{diag}\,(p_i) - p_i^T p_i \right) \left( y_i \circ p_i^{\circ -1} \right)^T = \mathrm{diag}\,(p_i) \left( y_i \circ p_i^{\circ -1} \right)^T - p_i^T p_i \left( y_i \circ p_i^{\circ -1} \right)^T$$
 
-#### Term 1: $\operatorname{diag}(p_i) \left( y_i \circ p_i^{\circ -1} \right)^T$
+#### Term 1: $\mathrm{diag}\,(p_i) \left( y_i \circ p_i^{\circ -1} \right)^T$
 
-$$\operatorname{diag}(p_i) \left( \frac{y_i}{p_i} \right)^T = p_i^T \circ \left( \frac{y_i}{p_i} \right)^T = y_i^T$$
+$$\mathrm{diag}\,(p_i) \left( \frac{y_i}{p_i} \right)^T = p_i^T \circ \left( \frac{y_i}{p_i} \right)^T = y_i^T$$
 
 #### Term 2: $p_i^T p_i \left( y_i \circ p_i^{\circ -1} \right)^T$
 
@@ -461,8 +461,10 @@ $$\nabla_Z L = \frac{1}{N} (P - Y) \in \mathbb{R}^{N \times C}$$
 
 #### Unaveraged Loss Gradient
 
-$$\nabla_Z L_{\text{sum}} = P - Y$$
+$$\nabla_Z L_{\mathrm{sum}} = P - Y$$
 
 #### Average Mini-Batch Loss Gradient
 
 $$\nabla_Z L = \frac{1}{N} (P - Y)$$
+
+---
